@@ -55,7 +55,9 @@ module System.Process (
     waitForProcess,
     getProcessExitCode,
     terminateProcess,
+#if defined(HAVE_KILLPG)
     interruptProcessGroupOf,
+#endif
 
     -- Interprocess communication
     createPipe,
@@ -689,6 +691,8 @@ terminateProcess ph = do
 -- On Windows systems, it generates a CTRL_BREAK_EVENT and will only work for
 -- processes created using 'createProcess' and setting the 'create_group' flag
 
+#if defined(HAVE_KILLPG)
+
 interruptProcessGroupOf
     :: ProcessHandle    -- ^ A process in the process group
     -> IO ()
@@ -708,6 +712,7 @@ interruptProcessGroupOf ph = do
                 signalProcessGroup sigINT pgid
 #endif
                 return ()
+#endif
 
 
 -- ----------------------------------------------------------------------------
